@@ -59,9 +59,9 @@
 
 
     <!--buttons-->
-    <color name="button_1">#d8e2e7</color>
-    <color name="button_1_pressed">#b5c3cb</color>
-    <color name="button_1_disabled">#66d8e2e7</color>
+    <color name="button_1">#FFC107</color>
+    <color name="button_1_pressed">#FF9800</color>
+    <color name="button_1_disabled">#FF9800</color>
 
     <color name="button_2">#272727</color>
     <color name="button_2_pressed">#000000</color>

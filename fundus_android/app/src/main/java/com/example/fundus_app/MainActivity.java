@@ -53,8 +53,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toast.makeText(this,"clicked",Toast.LENGTH_SHORT).show();
         ImagePicker.create(this)
                 .folderMode(false) // folder mode (false by default)
-                .toolbarFolderTitle("Folder") // folder selection title
-                .toolbarImageTitle("Tap to select") // image selection title
+                .toolbarFolderTitle("앨범") // folder selection title
+                .toolbarImageTitle("안저 사진을 골라주세요") // image selection title
                 .toolbarArrowColor(Color.BLACK) // Toolbar 'up' arrow color
                 .includeVideo(false) // Show video on image picker
                 .single() // single mode
@@ -120,7 +120,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-
 
     @Override
     public void onClick(View v) {
