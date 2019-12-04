@@ -7,6 +7,7 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
     <TextView
+        android:gravity="center"
         android:id="@+id/tv_path"
         android:textStyle="bold"
         android:textSize="20sp"
@@ -28,6 +29,15 @@
         android:text="사진 선택하기"
         android:layout_margin="10dp"
         style="@style/button_1"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"/>
+    <Button
+        android:id="@+id/btn_send_photo"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:text="진단하기"
+        android:layout_margin="10dp"
+        style="@style/button_2"
         android:layout_width="match_parent"
         android:layout_height="80dp"/>
 

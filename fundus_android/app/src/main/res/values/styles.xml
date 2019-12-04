@@ -15,4 +15,11 @@
 
     </style>
 
+    <style name="button_2" parent="@style/Widget.AppCompat.Button.Borderless">
+        <item name="android:background">@drawable/round_button_2_selector</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+
+    </style>
+
 </resources>

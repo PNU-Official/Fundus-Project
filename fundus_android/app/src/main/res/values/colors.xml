@@ -63,22 +63,9 @@
     <color name="button_1_pressed">#FF9800</color>
     <color name="button_1_disabled">#FF9800</color>
 
-    <color name="button_2">#272727</color>
-    <color name="button_2_pressed">#000000</color>
+    <color name="button_2">#F44336</color>
+    <color name="button_2_pressed">#E91E63</color>
     <color name="button_2_disabled">#66272727</color>
-
-    <color name="button_3_pressed">#272727</color>
-    <color name="button_3_disabled">#665c5d64</color>
-
-    <color name="button_4">@color/gray2</color>
-    <color name="button_4_pressed">#b5c3cb</color>
-    <color name="button_4_disabled">#66e3e5e6</color>
-
-    <color name="button_5">#b5c3cb</color>
-    <color name="button_5_pressed">#85959e</color>
-    <color name="button_5_disabled">#66b5c3cb</color>
-
-
 
 
 

@@ -1,10 +1,12 @@
 package com.example.fundus_app;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.BoringLayout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -29,9 +31,11 @@ import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button btn_select_photo;
+    private Button btn_select_photo, btn_send_photo;
     private ImageView img_viwer;
     private TextView tv_path;
+    private Boolean isPicked = false;
+    private String img_path = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +44,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bindUI();
 
         btn_select_photo.setOnClickListener(this);
+        btn_send_photo.setOnClickListener(this);
 //        ImagePicker.create(this).start();
     }
 
     private void bindUI(){
         btn_select_photo = findViewById(R.id.btn_select_photo);
+        btn_send_photo = findViewById(R.id.btn_send_photo);
         img_viwer = findViewById(R.id.img_viewer);
         tv_path = findViewById(R.id.tv_path);
     }
@@ -64,6 +70,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void uploadImage(String path) {
+        LoadingDialog loadingDialog = new LoadingDialog(this);
+        loadingDialog.show();
+
         File file = new File(path);
         RequestParams params = new RequestParams();
         try {
@@ -73,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
         }
 
-        Network.post(this,"/setting/taky_ad/add_logo_image", params, new JsonHttpResponseHandler() {
+        Network.post(this,"", params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
@@ -111,11 +120,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.e("image Name", image.getName());
             Log.e("image Path", image.getPath());
             Log.e("image Id", String.valueOf(image.getId()));
-            tv_path.setText(image.getPath());
+            img_path = image.getPath();
+
+            tv_path.setText(img_path);
             Glide.with(this)
                     .load(image.getPath())
                     .into(img_viwer);
 
+            isPicked = true;
+            img_path = image.getPath();
 
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -126,6 +139,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()){
             case R.id.btn_select_photo:
                 getPic();
+                break;
+            case R.id.btn_send_photo:
+                if (isPicked == false){
+                    Toast.makeText(this,"사진을 선택해 주세요.",Toast.LENGTH_SHORT).show();
+                }else{
+                    uploadImage(img_path);
+                }
                 break;
         }
     }
