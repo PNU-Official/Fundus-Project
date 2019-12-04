@@ -31,11 +31,13 @@ import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button btn_select_photo, btn_send_photo;
+    private Button btn_select_photo, btn_send_photo,btn_sample_img;
     private ImageView img_viwer;
     private TextView tv_path;
     private Boolean isPicked = false;
     private String img_path = "";
+
+    public static int REQUEST_REFRESH = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,12 +47,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         btn_select_photo.setOnClickListener(this);
         btn_send_photo.setOnClickListener(this);
+        btn_sample_img.setOnClickListener(this);
 //        ImagePicker.create(this).start();
     }
 
     private void bindUI(){
         btn_select_photo = findViewById(R.id.btn_select_photo);
         btn_send_photo = findViewById(R.id.btn_send_photo);
+        btn_sample_img = findViewById(R.id.btn_sample_img);
         img_viwer = findViewById(R.id.img_viewer);
         tv_path = findViewById(R.id.tv_path);
     }
@@ -146,6 +150,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }else{
                     uploadImage(img_path);
                 }
+                break;
+            case R.id.btn_sample_img:
+                Intent in = new Intent(MainActivity.this, ExamplePhotoActivity.class);
+//                in.putExtra("mode", ProductDetailActivity.VIEW_MODE);
+//                in.putExtra("company_serial", company_serial);
+//                in.putExtra("menu", selectedMenu);
+//                in.putExtra("category", category);
+                startActivityForResult(in, REQUEST_REFRESH);
                 break;
         }
     }
