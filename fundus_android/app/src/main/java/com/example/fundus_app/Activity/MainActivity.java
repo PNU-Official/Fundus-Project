@@ -1,12 +1,10 @@
-package com.example.fundus_app;
+package com.example.fundus_app.Activity;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.BoringLayout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,8 +14,11 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.esafirm.imagepicker.features.ImagePicker;
-import com.esafirm.imagepicker.features.ReturnMode;
 import com.esafirm.imagepicker.model.Image;
+import com.example.fundus_app.LoadingDialog;
+import com.example.fundus_app.Network;
+import com.example.fundus_app.R;
+import com.example.fundus_app.Useful;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -91,17 +92,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 super.onSuccess(statusCode, headers, response);
                 Log.e("response", String.valueOf(response));
                 try {
-                    if (response.getString("code").equals("S01")) {
+                    if (response.getString("code").equals("s01")) {
+                        String nonsymptom = response.getString("nonsymptom");
+                        String symptom = response.getString("symptom");
+
                         Log.e("nonSymtpo",response.getString("nonsymptom"));
                         Log.e("symptom",response.getString("symptom"));
 
                         Toast.makeText(getApplicationContext(),response.getString("code"),Toast.LENGTH_SHORT).show();
                         loadingDialog.dismiss();
 
+                        Intent intent = new Intent(MainActivity.this, ResultActivity.class);
+                        intent.putExtra("nonsymptom",nonsymptom);
+                        intent.putExtra("symptom",symptom);
+                        startActivity(intent);
+
 
                     } else {
                         String message = response.getString("message");
                         Toast.makeText(getApplicationContext(),response.getString("message"),Toast.LENGTH_SHORT).show();
+                        Useful.showAlertDialog(this,"오류",message);
                     }
 
                 } catch (Exception e) {

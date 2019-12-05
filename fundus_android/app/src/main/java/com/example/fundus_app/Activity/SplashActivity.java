@@ -1,4 +1,4 @@
-package com.example.fundus_app;
+package com.example.fundus_app.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.example.fundus_app.Activity.MainActivity;
+import com.example.fundus_app.R;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -26,7 +28,7 @@ public class SplashActivity extends AppCompatActivity {
                     sleep(4*1000);
 
                     // After 5 seconds redirect to another intent
-                    Intent i=new Intent(getBaseContext(),MainActivity.class);
+                    Intent i=new Intent(getBaseContext(), MainActivity.class);
                     startActivity(i);
 
                     //Remove activity

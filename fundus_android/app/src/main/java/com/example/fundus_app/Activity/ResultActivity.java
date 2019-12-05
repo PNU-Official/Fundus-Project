@@ -1,14 +1,16 @@
-package com.example.fundus_app;
+package com.example.fundus_app.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class ExamplePhotoActivity extends AppCompatActivity {
+import com.example.fundus_app.R;
+
+public class ResultActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_example_photo);
+        setContentView(R.layout.activity_result);
     }
 }
