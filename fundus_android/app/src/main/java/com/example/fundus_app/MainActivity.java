@@ -80,19 +80,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         File file = new File(path);
         RequestParams params = new RequestParams();
         try {
-
-            params.put("logo_img", file);
+            params.put("image", file);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
-        Network.post(this,"", params, new JsonHttpResponseHandler() {
+        Network.post(this,"/predict", params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
+                Log.e("response", String.valueOf(response));
                 try {
                     if (response.getString("code").equals("S01")) {
+                        Log.e("nonSymtpo",response.getString("nonsymptom"));
+                        Log.e("symptom",response.getString("symptom"));
+
                         Toast.makeText(getApplicationContext(),response.getString("code"),Toast.LENGTH_SHORT).show();
+                        loadingDialog.dismiss();
+
 
                     } else {
                         String message = response.getString("message");
