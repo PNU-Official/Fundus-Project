@@ -36,6 +36,7 @@
     </LinearLayout>
 
     <Button
+        android:visibility="gone"
         android:id="@+id/btn_sample_img"
         style="@style/button_3"
         android:layout_width="match_parent"

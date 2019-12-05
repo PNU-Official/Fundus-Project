@@ -48,7 +48,7 @@ public class ExamplePhotoActivity extends AppCompatActivity {
 
 
     }
-    
+
     private void getData(){
         dataArrayList.add("정상 1");
         dataArrayList.add("정상 2");

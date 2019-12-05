@@ -3,9 +3,8 @@ package com.example.fundus_app.Activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -34,12 +33,11 @@ import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button btn_select_photo, btn_send_photo, btn_sample_img;
+    private Button btn_select_photo, btn_send_photo,btn_sample_img;
     private ImageView img_viwer;
     private TextView tv_path;
     private Boolean isPicked = false;
     private String img_path = "";
-    private Bitmap bitmap;
 
     public static int REQUEST_REFRESH = 3;
 
@@ -55,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        ImagePicker.create(this).start();
     }
 
-    private void bindUI() {
+    private void bindUI(){
         btn_select_photo = findViewById(R.id.btn_select_photo);
         btn_send_photo = findViewById(R.id.btn_send_photo);
         btn_sample_img = findViewById(R.id.btn_sample_img);
@@ -63,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tv_path = findViewById(R.id.tv_path);
     }
 
-    private void getPic() {
+    private void getPic(){
         ImagePicker.create(this)
                 .folderMode(false) // folder mode (false by default)
                 .toolbarFolderTitle("앨범") // folder selection title
@@ -79,22 +77,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void uploadImage(String path) {
         LoadingDialog loadingDialog = new LoadingDialog(this);
         loadingDialog.show();
+        Log.e("path",path);
 
+        File file = new File(path);
         RequestParams params = new RequestParams();
-        if (path.isEmpty()) {
-            params.put("image", bitmap);
-
-        } else {
-            File file = new File(path);
-            try {
-                params.put("image", file);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+        try {
+            params.put("image", file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
 
-
-        Network.post(this, "/predict", params, new JsonHttpResponseHandler() {
+        Network.post(this,"/predict", params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
@@ -104,15 +97,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         String nonsymptom = response.getString("nonsymptom");
                         String symptom = response.getString("symptom");
 
-                        Log.e("nonSymtpo", response.getString("nonsymptom"));
-                        Log.e("symptom", response.getString("symptom"));
+                        Log.e("nonSymtpo",response.getString("nonsymptom"));
+                        Log.e("symptom",response.getString("symptom"));
 
-                        Toast.makeText(getApplicationContext(), response.getString("code"), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(),response.getString("code"),Toast.LENGTH_SHORT).show();
                         loadingDialog.dismiss();
 
                         Intent intent = new Intent(MainActivity.this, ResultActivity.class);
-                        intent.putExtra("nonsymptom", nonsymptom);
-                        intent.putExtra("symptom", symptom);
+                        intent.putExtra("nonsymptom",nonsymptom);
+                        intent.putExtra("symptom",symptom);
                         startActivity(intent);
 
 
@@ -139,39 +132,56 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, final int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.e("onActivityResult", "called");
+        Log.e("onActivityResult","called");
 
-        if (requestCode == REQUEST_REFRESH) {
+        if (requestCode == REQUEST_REFRESH){
             //샘플 사진에서 받아오기
             if (resultCode == RESULT_CANCELED) {   // RESULT_CANCEL
                 Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_SHORT).show();
             }
-            if (data.getStringExtra("result").equals("0")) {
+
+
+            if (data.getStringExtra("result").equals("0")){
                 img_viwer.setImageResource(R.drawable.non_1);
-                bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.non_1);
+                Uri imageUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() +
+                        R.drawable.non_1);
+                img_path = imageUri.getPath();
+                Log.e("path_1", String.valueOf(imageUri));
+                Log.e("path_1",img_path);
 
-            } else if (data.getStringExtra("result").equals("1")) {
+            }else  if (data.getStringExtra("result").equals("1")){
                 img_viwer.setImageResource(R.drawable.non_2);
-                bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.non_2);
+                Uri imageUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() +
+                        R.drawable.non_2);
+                img_path = imageUri.getPath();
 
-            } else if (data.getStringExtra("result").equals("2")) {
+            }else  if (data.getStringExtra("result").equals("2")){
                 img_viwer.setImageResource(R.drawable.non_3);
-                bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.non_3);
+                Uri imageUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() +
+                        R.drawable.non_3);
+                img_path = imageUri.getPath();
 
-            } else if (data.getStringExtra("result").equals("3")) {
+            }else  if (data.getStringExtra("result").equals("3")){
                 img_viwer.setImageResource(R.drawable.sym_1);
-                bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.sym_1);
+                Uri imageUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() +
+                        R.drawable.sym_1);
+                img_path = imageUri.getPath();
 
-            } else if (data.getStringExtra("result").equals("4")) {
+            }else  if (data.getStringExtra("result").equals("4")){
                 img_viwer.setImageResource(R.drawable.sym_2);
-                bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.sym_2);
+                Uri imageUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() +
+                        R.drawable.sym_2);
+                img_path = imageUri.getPath();
 
-            } else if (data.getStringExtra("result").equals("5")) {
+            }else  if (data.getStringExtra("result").equals("5")){
                 img_viwer.setImageResource(R.drawable.sym_3);
-                bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.sym_3);
+                Uri imageUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() +
+                        R.drawable.sym_3);
+                img_path = imageUri.getPath();
 
             }
             isPicked = true;
+
 
 
         }
@@ -185,7 +195,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.e("image Id", String.valueOf(image.getId()));
             img_path = image.getPath();
 
-            tv_path.setText(img_path);
             Glide.with(this)
                     .load(image.getPath())
                     .into(img_viwer);
@@ -198,14 +207,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
+        switch (v.getId()){
             case R.id.btn_select_photo:
                 getPic();
                 break;
             case R.id.btn_send_photo:
-                if (isPicked == false) {
-                    Toast.makeText(this, "사진을 선택해 주세요.", Toast.LENGTH_SHORT).show();
-                } else {
+                if (isPicked == false){
+                    Toast.makeText(this,"사진을 선택해 주세요.",Toast.LENGTH_SHORT).show();
+                }else{
                     uploadImage(img_path);
                 }
                 break;
