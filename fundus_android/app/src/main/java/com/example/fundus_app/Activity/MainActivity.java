@@ -111,7 +111,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     } else {
                         String message = response.getString("message");
                         Toast.makeText(getApplicationContext(),response.getString("message"),Toast.LENGTH_SHORT).show();
-                        Useful.showAlertDialog(this,"오류",message);
                     }
 
                 } catch (Exception e) {

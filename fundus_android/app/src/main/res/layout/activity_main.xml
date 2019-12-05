@@ -42,7 +42,7 @@
         android:layout_height="80dp"
         android:layout_margin="10dp"
         android:text="예시 사진 선택"
-       android:textSize="20sp"
+        android:textSize="20sp"
         android:textStyle="bold" />
 
     <Button
