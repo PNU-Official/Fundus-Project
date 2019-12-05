@@ -3,6 +3,8 @@ package com.example.fundus_app.Activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,11 +34,12 @@ import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button btn_select_photo, btn_send_photo,btn_sample_img;
+    private Button btn_select_photo, btn_send_photo, btn_sample_img;
     private ImageView img_viwer;
     private TextView tv_path;
     private Boolean isPicked = false;
     private String img_path = "";
+    private Bitmap bitmap;
 
     public static int REQUEST_REFRESH = 3;
 
@@ -52,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        ImagePicker.create(this).start();
     }
 
-    private void bindUI(){
+    private void bindUI() {
         btn_select_photo = findViewById(R.id.btn_select_photo);
         btn_send_photo = findViewById(R.id.btn_send_photo);
         btn_sample_img = findViewById(R.id.btn_sample_img);
@@ -60,8 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tv_path = findViewById(R.id.tv_path);
     }
 
-    private void getPic(){
-        Toast.makeText(this,"clicked",Toast.LENGTH_SHORT).show();
+    private void getPic() {
         ImagePicker.create(this)
                 .folderMode(false) // folder mode (false by default)
                 .toolbarFolderTitle("앨범") // folder selection title
@@ -78,15 +80,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         LoadingDialog loadingDialog = new LoadingDialog(this);
         loadingDialog.show();
 
-        File file = new File(path);
         RequestParams params = new RequestParams();
-        try {
-            params.put("image", file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        if (path.isEmpty()) {
+            params.put("image", bitmap);
+
+        } else {
+            File file = new File(path);
+            try {
+                params.put("image", file);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
 
-        Network.post(this,"/predict", params, new JsonHttpResponseHandler() {
+
+        Network.post(this, "/predict", params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
@@ -96,21 +104,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         String nonsymptom = response.getString("nonsymptom");
                         String symptom = response.getString("symptom");
 
-                        Log.e("nonSymtpo",response.getString("nonsymptom"));
-                        Log.e("symptom",response.getString("symptom"));
+                        Log.e("nonSymtpo", response.getString("nonsymptom"));
+                        Log.e("symptom", response.getString("symptom"));
 
-                        Toast.makeText(getApplicationContext(),response.getString("code"),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), response.getString("code"), Toast.LENGTH_SHORT).show();
                         loadingDialog.dismiss();
 
                         Intent intent = new Intent(MainActivity.this, ResultActivity.class);
-                        intent.putExtra("nonsymptom",nonsymptom);
-                        intent.putExtra("symptom",symptom);
+                        intent.putExtra("nonsymptom", nonsymptom);
+                        intent.putExtra("symptom", symptom);
                         startActivity(intent);
 
 
                     } else {
-                        String message = response.getString("message");
-                        Toast.makeText(getApplicationContext(),response.getString("message"),Toast.LENGTH_SHORT).show();
+//                        String message = response.getString("message");
+//                        Toast.makeText(getApplicationContext(),response.getString("message"),Toast.LENGTH_SHORT).show();
                     }
 
                 } catch (Exception e) {
@@ -130,6 +138,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onActivityResult(int requestCode, final int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.e("onActivityResult", "called");
+
+        if (requestCode == REQUEST_REFRESH) {
+            //샘플 사진에서 받아오기
+            if (resultCode == RESULT_CANCELED) {   // RESULT_CANCEL
+                Toast.makeText(MainActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+            }
+            if (data.getStringExtra("result").equals("0")) {
+                img_viwer.setImageResource(R.drawable.non_1);
+                bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.non_1);
+
+            } else if (data.getStringExtra("result").equals("1")) {
+                img_viwer.setImageResource(R.drawable.non_2);
+                bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.non_2);
+
+            } else if (data.getStringExtra("result").equals("2")) {
+                img_viwer.setImageResource(R.drawable.non_3);
+                bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.non_3);
+
+            } else if (data.getStringExtra("result").equals("3")) {
+                img_viwer.setImageResource(R.drawable.sym_1);
+                bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.sym_1);
+
+            } else if (data.getStringExtra("result").equals("4")) {
+                img_viwer.setImageResource(R.drawable.sym_2);
+                bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.sym_2);
+
+            } else if (data.getStringExtra("result").equals("5")) {
+                img_viwer.setImageResource(R.drawable.sym_3);
+                bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.sym_3);
+
+            }
+            isPicked = true;
+
+
+        }
         if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
             // Get a list of picked images
             List<Image> images = ImagePicker.getImages(data);
@@ -149,28 +194,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             img_path = image.getPath();
 
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_select_photo:
                 getPic();
                 break;
             case R.id.btn_send_photo:
-                if (isPicked == false){
-                    Toast.makeText(this,"사진을 선택해 주세요.",Toast.LENGTH_SHORT).show();
-                }else{
+                if (isPicked == false) {
+                    Toast.makeText(this, "사진을 선택해 주세요.", Toast.LENGTH_SHORT).show();
+                } else {
                     uploadImage(img_path);
                 }
                 break;
             case R.id.btn_sample_img:
                 Intent in = new Intent(MainActivity.this, ExamplePhotoActivity.class);
-//                in.putExtra("mode", ProductDetailActivity.VIEW_MODE);
-//                in.putExtra("company_serial", company_serial);
-//                in.putExtra("menu", selectedMenu);
-//                in.putExtra("category", category);
                 startActivityForResult(in, REQUEST_REFRESH);
                 break;
         }
